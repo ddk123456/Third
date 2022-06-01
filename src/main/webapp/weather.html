@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajax天气处理</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+
+  <!-- <script src="jquery.js"></script> -->
+</head>
+<body>
+  <!-- 用Ajax对天气接口发请求，收到响应的数据（JSON）后，解析，并处理，显示在table中 -->
+
+  <!-- 下拉框，进行城市的选择，选择了哪个城市，点击查询后，就能得到哪个城市的天气 -->
+
+  <script>
+
+    // 完全支持CSS选择器
+
+    jQuery(document).ready(function(){
+      jQuery("#searchButton").click(function (e) { 
+        e.preventDefault();
+        var citykey=jQuery("#oSel").val();
+        
+        jQuery.ajax({
+          type: "GET",
+          // url：组成部分
+          // 1、项目地址
+          // 2、API接口（具体的服务）
+          url: "http://localhost:8080/Third/getWeather.do",
+          data: {"citykey":citykey},
+          dataType: "json",
+          success: function (response) {
+            $.each(response.data.forecast, function (i, weatherObj) { 
+              console.log(weatherObj);
+              /*var $tr=$("<tr>")
+                .append($("<td>").append(response.data.city))
+                .append($("<td>").append(weatherObj.date))
+                .append($("<td>").append(weatherObj.high))
+                .append($("<td>").append(weatherObj.fengli))
+                .append($("<td>").append(weatherObj.low))
+                .append($("<td>").append(weatherObj.fengxiang))
+                .append($("<td>").append(weatherObj.type));
+              //链式操作
+              $("#tb").append($tr);
+              */
+              // document.createElement("tr");
+              var $tr=$("<tr>"
+                +"<td>"+response.data.city+"</td>"
+                +"<td>"+weatherObj.date+"</td>"
+                +"<td>"+weatherObj.high+"</td>"
+                +"<td>"+weatherObj.fengli+"</td>"
+                +"<td>"+weatherObj.low+"</td>"
+                +"<td>"+weatherObj.fengxiang+"</td>"
+                +"<td>"+weatherObj.type+"</td>"
+                +"</tr>");
+                $("#tb").append($tr);
+            });
+          }
+        });
+
+        // $.getJSON("http://wthrcdn.etouch.cn/weather_mini", {"citykey":citykey},
+        //   function (data, textStatus, jqXHR) {
+        //     console.log(data);
+        //   }
+        // );
+
+        /*
+        $=jQuery
+        */
+    })
+  })
+  </script>
+  <select name="" id="oSel">
+    <option value="0">请选择要查询的城市</option>
+    <option value="101300101">南宁</option>
+    <option value="101300501" selected>桂林</option>
+    <option value="101300701">贺州</option>
+    <option value="101300301">柳州</option>
+  </select>
+  <button id="searchButton">查询</button>
+  <!-- <img src="https://www.juntaitec.cn/DSC_2554.JPG" alt=""> -->
+  <table border="1" id="tb">
+    <tr>
+      <th>城市</th>
+      <th>日期</th>
+      <th>最高气温</th>
+      <th>风力</th>
+      <th>最低气温</th>
+      <th>风向</th>
+      <th>天气</th>
+    </tr>
+  </table>
+</body>
+</html>
